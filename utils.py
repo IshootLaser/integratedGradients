@@ -28,7 +28,6 @@ def plot_compare(imgs1, imgs2, imgs3, labels):
             ax[i, 1].set_title('original')
             ax[i, 2].set_title('XAI images')
             ax[i, 3].set_title('top pixels')
-    f.suptitle('Comparison', fontsize=20)
     plt.show()
     return
 
