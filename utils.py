@@ -13,7 +13,7 @@ def plot_compare(imgs1, imgs2, imgs3, labels):
     """
     assert len(imgs1) == len(imgs2), 'The length of 2 inputs must be the same!'
     length = len(imgs1)
-    f, ax = plt.subplots(length, 4, figsize = (10, len(imgs1) * 2), dpi = 300)
+    f, ax = plt.subplots(length, 4, figsize = (10, len(imgs1) * 2))
     for i in range(length):
         ax[i, 1].imshow(imgs1[i])
         ax[i, 1].axis('off')
@@ -31,7 +31,7 @@ def plot_compare(imgs1, imgs2, imgs3, labels):
     plt.show()
     return
 
-def overlay(img, mask):
+def overlay(img, mask, ix = None):
     """
     Visualize img and mask together in 1 picture.
     Args:
@@ -48,7 +48,12 @@ def overlay(img, mask):
     elif mask.dtype == np.uint8:
         x, y = np.where(mask != 0)
         img = img.copy()
-        img[x, y, :] = (np.array([0, 255, 0]))
+        if ix is None:
+            img[x, y, :] = np.array([0, 255, 0])
+        else:
+            color = np.array([0, 0, 0])
+            color[ix] = 255
+            img[x, y, :] = color
         img = img.astype(np.uint8)
     return img
 
@@ -110,3 +115,13 @@ def visualize(ig, img):
     ovl = overlay(img, ig)
     highlight = overlay(img, binary_mask)
     return binary_mask, ovl, highlight
+
+def visualize_clusters(ig):
+    blk = np.zeros((224, 224, 3)).astype(np.uint8)
+    for n, j in enumerate(ig):
+        j = selectTopPercent(j, 0.05)
+        y, x = np.where(j != 0)
+        color = np.array([0, 0, 0])
+        color[n] = 255
+        blk[y, x] = color
+    return blk[..., ::-1]
